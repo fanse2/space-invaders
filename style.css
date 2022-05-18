@@ -1,0 +1,57 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.board {
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Press Start 2P', cursive;
+            
+}
+.top {
+    background-color: black;
+    color: white;
+    width: 480px;
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    padding-top: 11px;
+}
+#grid {
+    background-color: black;
+    margin: auto;
+}
+.bottom {
+    background-color: black;
+    color: white;
+    width: 480px;
+    display: grid;
+    grid-template-columns: 2fr 3fr 4fr 3fr 2fr;
+    padding-bottom: 11px;
+}
+
+.part {
+    text-transform: uppercase;
+    text-align: center;
+    padding: 5px 5px;
+}
+
+.part1 {
+    color: aqua;
+}
+.part2 {
+    color: crimson;
+}
+.part3 {
+    color: yellow;
+}
+.part5 {
+    color: greenyellow;
+}
+.part14 {
+    color: palevioletred;
+}

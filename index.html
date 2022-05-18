@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Space Invaders</title>
+</head>
+<body onload="start()">
+    <div style="display: none">
+        <img id="e1" src="img/e1.png" style="display: none;">
+        <img id="e2" src="img/e2.png" style="display: none;">
+        <img id="e3" src="img/e3.png" style="display: none;">
+        <img id="e4" src="img/e4.png" style="display: none;">
+        <img id="e5" src="img/e5.png" style="display: none;">
+        <img id="e6" src="img/e6.png" style="display: none;">
+        <img id="ex1" src="img/ex1.png" style="display: none;">
+        <img id="ex2" src="img/ex2.png" style="display: none;">
+        <img id="ex3" src="img/ex3.png" style="display: none;">
+        <img id="ex4" src="img/ex4.png" style="display: none;">
+        <img id="ex5" src="img/ex5.png" style="display: none;">
+        <img id="jet" src="img/jet.png" style="display: none;">
+    </div>
+    <div class="board">
+        <div class="top">
+            <div class="part part1">score-1</div>
+            <div class="part part2">jinpa</div>
+            <div class="part part3">score-2</div>
+            <div class="part part4">0</div>
+            <div class="part part5">5000</div>
+            <div class="part part6"></div>
+        </div>
+        <canvas id="grid" width="480" height="540"></canvas>
+        <div class="bottom">
+            <div class="part part11">3</div>
+            <div class="part part12">🛸🛸</div>
+            <div class="part part13"></div>
+            <div class="part part14">credit</div>
+            <div class="part part15">0</div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
