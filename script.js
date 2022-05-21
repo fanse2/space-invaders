@@ -18,10 +18,11 @@ const backups = document.querySelector('.part12')
 const gaWidth = 480
 const gaHeight = 540
 const sWidth = 32
+let moveDirection = 1
 
 const ctx = grid.getContext('2d')
 
-const invaders = []
+let gameInt
 
 class Invader {
     constructor(x,y,type,ctx) {
@@ -31,8 +32,9 @@ class Invader {
         this.ctx = ctx
     }
 
-    update() {
-
+    update(dx,dy) {
+        this.x += dx
+        this.y += dy
     }
 
     draw() {
@@ -43,8 +45,46 @@ class Invader {
 }
 
 class Jet {
+    constructor(x,y,ctx) {
+        this.x = x
+        this.y = y
+        this.ctx = ctx     
+    }
+
+    update(dx) {
+        this.x += dx
+    }
+
+    draw() {
+        ctx.drawImage(jet, this.x ,this.y ,sWidth,sWidth)
+    }
 
 }
+
+class Bullet {
+    constructor(x,y,ctx) {
+        this.x = x
+        this.y = y
+        this.ctx = ctx
+    }
+
+    update(dy) {
+        this.y += dy
+    }
+
+    draw() {
+        ctx.strokeStyle = 'red'
+        ctx.lineWidth = 2
+
+        ctx.beginPath()
+        ctx.moveTo(this.x, this.y)
+        ctx.lineTo(this.x, this.y+10)
+        ctx.stroke()
+    }
+}
+const invaders = []
+let shooter = new Jet(gaWidth/2 -sWidth/2 ,500, ctx)
+const bullets = []
 
 function setting() {
     // img 14px * 14p   
@@ -56,24 +96,64 @@ function setting() {
         invaders.push(new Invader(10 + i*(sWidth+5),10+(sWidth+5)*3,e4,ctx))
         
     }
-    
-    ctx.drawImage(jet, gaWidth/2 -sWidth/2 ,500,sWidth,sWidth)
 
     invaders.forEach(v=>{
         v.draw()
     })
-    // ctx.drawImage(e1, 100,140,sWidth,sWidth)
-    // ctx.drawImage(e2, 100,180,sWidth,sWidth)
-    // ctx.drawImage(e3, 100,220,sWidth,sWidth)
 
+    shooter.draw()
+
+}
+
+function draw() {
+    let dy = 0
+
+    if(invaders.some(v=>v.x < 10 || v.x > gaWidth - sWidth - 10)) {
+        dy = 10
+        moveDirection *= -1
+    }
+
+    bullets.forEach(v=>v.update(-20))
+    
+
+    invaders.forEach(v=>{
+        v.update(2 * moveDirection, dy)
+    })
+    ctx.clearRect(0, 0, gaWidth, gaHeight)
+
+    invaders.forEach(v=>{
+        v.draw()
+    })
+
+    shooter.draw()
+
+    bullets.forEach(v=>v.draw())
 }
 
 function start() {
 
     setting()
     drawBackups(2)
+    gameInt = setInterval(draw, 50)
+
 }
 
+function moveShooter(e) {
+    switch(e.key) {
+        case 'ArrowLeft':
+            if(shooter.x > 10) shooter.update(-10)
+            break
+        case 'ArrowRight':
+            if(shooter.x < gaWidth - sWidth - 10) shooter.update(10)
+            break
+        case ' ':
+            bullets.push(new Bullet(shooter.x + sWidth / 2 + 1  , 500, ctx))
+            break
+        
+    }
+}
+
+document.addEventListener('keydown', moveShooter)
 
 
 function drawBackups(count) {
