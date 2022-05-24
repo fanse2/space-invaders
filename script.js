@@ -14,10 +14,12 @@ const ex4 = document.querySelector('#ex4')
 const ex5 = document.querySelector('#ex5')
 const jet = document.querySelector('#jet')
 const backups = document.querySelector('.part12')
+const scoreBD = document.querySelector('.part4')
 
 const gaWidth = 480
 const gaHeight = 540
 const sWidth = 32
+let score = 0
 let moveDirection = 1
 
 const ctx = grid.getContext('2d')
@@ -30,6 +32,7 @@ class Invader {
         this.y = y
         this.type = type
         this.ctx = ctx
+        this.condition = true
     }
 
     update(dx,dy) {
@@ -41,6 +44,11 @@ class Invader {
 
         ctx.drawImage(this.type, this.x, this.y, sWidth, sWidth)
         // console.log(this.type, this.x, this.y, sWidth, sWidth)
+    }
+
+    chkCollision(x,y) {
+        if(x>this.x && x<this.x+sWidth && y>this.y && y<this.y+sWidth && this.condition) return true
+        return false
     }
 }
 
@@ -89,11 +97,11 @@ const bullets = []
 function setting() {
     // img 14px * 14p   
     // adding invaders
-    for(let i=0; i<10; i++) {
-        invaders.push(new Invader(10 + i*(sWidth+5),10,e1,ctx))
-        invaders.push(new Invader(10 + i*(sWidth+5),10+sWidth+5,e2,ctx))
-        invaders.push(new Invader(10 + i*(sWidth+5),10+(sWidth+5)*2,e3,ctx))
-        invaders.push(new Invader(10 + i*(sWidth+5),10+(sWidth+5)*3,e4,ctx))
+    for(let i=0; i<8; i++) {
+        invaders.push(new Invader(10 + i*(sWidth+15),20,e1,ctx))
+        invaders.push(new Invader(10 + i*(sWidth+15),20+sWidth+5,e2,ctx))
+        invaders.push(new Invader(10 + i*(sWidth+15),20+(sWidth+5)*2,e3,ctx))
+        invaders.push(new Invader(10 + i*(sWidth+15),20+(sWidth+5)*3,e4,ctx))
         
     }
 
@@ -105,20 +113,52 @@ function setting() {
 
 }
 
-function draw() {
+function gameLoop() {
     let dy = 0
+
+    if(invaders.length==0) {
+        clearInterval(gameInt)
+        alert('You bit them all!! and Scored ' + score)
+
+    }
 
     if(invaders.some(v=>v.x < 10 || v.x > gaWidth - sWidth - 10)) {
         dy = 10
         moveDirection *= -1
     }
 
+    //bullets move
     bullets.forEach(v=>v.update(-20))
-    
+    bullets.forEach((v,i,a)=>{
+        if(v.y < 0) {
+            a.splice(i,1)
+        }
+        invaders.forEach((vv,ii,aa)=>{
+            if(vv.chkCollision(v.x,v.y)){
+                a.splice(i,1)       //bullit removal
 
+                //explode & invader removal
+                vv.type=ex1
+                setTimeout(()=>vv.type=ex2,5)
+                setTimeout(()=>vv.type=ex3,10)
+                setTimeout(()=>vv.type=ex4,15)
+                setTimeout(()=>vv.type=ex5,20)
+                setTimeout(()=>{
+                    aa.splice(ii,1)
+                    score+=10
+                },25)
+                console.log('fire!!') 
+            }
+            
+        })
+        
+    })
+    
+    //invaders move
     invaders.forEach(v=>{
         v.update(2 * moveDirection, dy)
     })
+
     ctx.clearRect(0, 0, gaWidth, gaHeight)
 
     invaders.forEach(v=>{
@@ -128,32 +168,40 @@ function draw() {
     shooter.draw()
 
     bullets.forEach(v=>v.draw())
+
+    scoreBD.innerHTML = score
+
+    console.log('count :',bullets.length)
 }
 
 function start() {
 
     setting()
     drawBackups(2)
-    gameInt = setInterval(draw, 50)
+    gameInt = setInterval(gameLoop, 50)
 
 }
 
 function moveShooter(e) {
-    switch(e.key) {
+
+    console.log(e.key+" / "+e.code)
+    switch(e.code) {
         case 'ArrowLeft':
             if(shooter.x > 10) shooter.update(-10)
             break
         case 'ArrowRight':
             if(shooter.x < gaWidth - sWidth - 10) shooter.update(10)
-            break
-        case ' ':
-            bullets.push(new Bullet(shooter.x + sWidth / 2 + 1  , 500, ctx))
-            break
-        
+              break
     }
 }
 
+function fire(e) {
+    if(e.code=='Space')  bullets.push(new Bullet(shooter.x + sWidth / 2 + 1  , 500, ctx))
+}
+
 document.addEventListener('keydown', moveShooter)
+document.addEventListener('keypress', fire)
+
 
 
 function drawBackups(count) {
