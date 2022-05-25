@@ -21,6 +21,7 @@ const gaHeight = 540
 const sWidth = 32
 let score = 0
 let moveDirection = 1
+let jetSpeed = 10
 
 const ctx = grid.getContext('2d')
 
@@ -57,10 +58,15 @@ class Jet {
         this.x = x
         this.y = y
         this.ctx = ctx     
+        this.speed = 0
     }
 
-    update(dx) {
-        this.x += dx
+    // update(dx) {
+    //     this.x += dx
+    // }
+
+    update() {
+        this.x += this.speed
     }
 
     draw() {
@@ -127,6 +133,10 @@ function gameLoop() {
         moveDirection *= -1
     }
 
+    if((shooter.x > 10 && shooter.speed < 0) || (shooter.x < gaWidth - sWidth - 10 && shooter.speed > 0) ) {
+        shooter.update()
+    } 
+
     //bullets move
     bullets.forEach(v=>v.update(-20))
     bullets.forEach((v,i,a)=>{
@@ -139,9 +149,9 @@ function gameLoop() {
 
                 //explode & invader removal
                 vv.type=ex1
-                setTimeout(()=>vv.type=ex2,5)
-                setTimeout(()=>vv.type=ex3,10)
-                setTimeout(()=>vv.type=ex4,15)
+                setTimeout(()=>vv.type=ex2,10)
+                setTimeout(()=>vv.type=ex3,15)
+                setTimeout(()=>vv.type=ex4,18)
                 setTimeout(()=>vv.type=ex5,20)
                 setTimeout(()=>{
                     aa.splice(ii,1)
@@ -187,11 +197,16 @@ function moveShooter(e) {
     console.log(e.key+" / "+e.code)
     switch(e.code) {
         case 'ArrowLeft':
-            if(shooter.x > 10) shooter.update(-10)
+            shooter.speed = -10
             break
         case 'ArrowRight':
-            if(shooter.x < gaWidth - sWidth - 10) shooter.update(10)
-              break
+            shooter.speed = 10
+            break
+    }
+}
+function stopShooter(e) {
+    if(e.code=='ArrowLeft' || e.code=='ArrowRight') {
+        shooter.speed = 0
     }
 }
 
@@ -201,6 +216,7 @@ function fire(e) {
 
 document.addEventListener('keydown', moveShooter)
 document.addEventListener('keypress', fire)
+document.addEventListener('keyup', stopShooter)
 
 
 
