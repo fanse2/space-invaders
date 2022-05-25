@@ -193,7 +193,6 @@ function start() {
 }
 
 function moveShooter(e) {
-
     console.log(e.key+" / "+e.code)
     switch(e.code) {
         case 'ArrowLeft':
