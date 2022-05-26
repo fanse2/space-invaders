@@ -54,7 +54,7 @@ class Invader {
     }
 
     chkCollision(x,y) {
-        if(x>this.x && x<this.x+sWidth && y>this.y && y<this.y+sWidth) return true
+        if(x>this.x && x<this.x+sWidth && y>this.y && y<this.y+sWidth && this.condition) return true
         return false
     }
 }
@@ -65,6 +65,7 @@ class Jet {
         this.y = y
         this.ctx = ctx     
         this.speed = 0
+        this.type = jet
     }
 
     update() {
@@ -72,13 +73,11 @@ class Jet {
     }
 
     draw() {
-        ctx.drawImage(jet, this.x ,this.y ,sWidth,sWidth)
+        ctx.drawImage(this.type, this.x ,this.y ,sWidth, sWidth)
     }
 
     chkCollision(x,y) {
-
-        console.log(x,'-',y,':',this.x,'-',this.y)
-        if(x>this.x && x<this.x+sWidth && y>this.y && y<this.y+sWidth && this.condition) return true
+        if(x>this.x && x<this.x+sWidth && y>this.y && y<this.y+sWidth) return true
         return false
     }
 
@@ -155,9 +154,13 @@ function finishStage() {
     clearInterval(bulletInt)
     bullets = []
     invaders = []
-    alert('You bit them all!! and Scored ' + score)
+    eBullets = []
+    //alert('You bit them all!! and Scored ' + score)
     
-    setupStage(++stage)
+    // setupStage(++stage)
+    stage++
+    setTimeout(betweenStage,200)
+    setTimeout(()=>setupStage(stage),2000)
 
 
 }
@@ -167,22 +170,31 @@ function failStage() {
     clearInterval(bulletInt)
     bullets = []
     invaders = []
+    eBullets = []
+    shooter.type = ex1
+    setTimeout(()=>shooter.type = ex2,30)
+    setTimeout(()=>shooter.type = ex3,60)
+    setTimeout(()=>shooter.type = ex4,90)
+    setTimeout(()=>shooter.type = ex5,120)
     shooterCnt--
-    alert('you failed!')
+    //alert('you failed!')
     if(shooterCnt>0) {
-        setupStage(stage) 
+        setTimeout(()=>shooter.type = jet,200)
+        setTimeout(()=>setupStage(stage),2000)
+        
     } else {
         countBD.innerHTML = 0
         alert('game over!!')
     }
 }
 
-function clearStage() {
-
-}
-
-function setupLoop() {
-
+function betweenStage() {
+    
+    ctx.font = '30px monospace'
+    ctx.fillStyle = 'yellow'
+    ctx.textAlign = 'center'
+    ctx.fillText(`STAGE ${stage}`, gaWidth/2,gaHeight/2)
+    //alert(ctx.font)
 }
 
 function bulletLoop() {
@@ -242,7 +254,7 @@ function gameLoop() {
             a.splice(i,1)       //bullet removal
         }
         if(shooter.chkCollision(v.x,v.y)) {
-            alert('got shot!')
+            //alert('got shot!')
             failStage()
         }
     })
@@ -266,7 +278,7 @@ function gameLoop() {
     countBD.innerHTML = shooterCnt
 
     // invaders reached end
-    if(invaders.some(v=>v.y > 350)) {
+    if(invaders.some(v=>v.y > 500 - sWidth)) {
         failStage()
     }
 
@@ -274,9 +286,8 @@ function gameLoop() {
 }
 
 function start() {
-
-    setupStage()
-
+    betweenStage()
+    setTimeout(setupStage,2000)
 }
 
 function moveShooter(e) {
@@ -304,7 +315,6 @@ document.addEventListener('keypress', fire)
 document.addEventListener('keyup', stopShooter)
 
 function drawBackups(count) {
-    
     backups.innerHTML=''
     for(let i=0; i<count; i++){
         let img = document.createElement('img')
