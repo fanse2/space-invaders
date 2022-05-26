@@ -17,6 +17,7 @@ const backups = document.querySelector('.part12')
 const scoreBD = document.querySelector('.part4')
 const countBD = document.querySelector('.part11')
 const stageBD = document.querySelector('.part6')
+const startBTN = document.querySelector('.startButton')
 
 
 const gaWidth = 480
@@ -185,6 +186,7 @@ function failStage() {
     } else {
         countBD.innerHTML = 0
         alert('game over!!')
+        startBTN.textContent = 'Start'
     }
 }
 
@@ -286,8 +288,18 @@ function gameLoop() {
 }
 
 function start() {
-    betweenStage()
-    setTimeout(setupStage,2000)
+    if(startBTN.textContent=='Start'){
+        startBTN.textContent = 'Started'
+        score = 0
+        moveDirection = 1
+        jetSpeed = 0
+        stage = 1
+        shooterCnt = 3
+        shooter.type=jet
+        betweenStage()
+        setTimeout(setupStage,2000)
+    } 
+  
 }
 
 function moveShooter(e) {
@@ -302,6 +314,9 @@ function moveShooter(e) {
     }
 }
 function stopShooter(e) {
+    if(startBTN.textContent=='Start') {
+        start()
+    }
     if(e.code=='ArrowLeft' || e.code=='ArrowRight') {
         shooter.speed = 0
     }
@@ -325,3 +340,9 @@ function drawBackups(count) {
         
     }
 }
+
+    
+ctx.font = '30px monospace'
+ctx.fillStyle = 'yellow'
+ctx.textAlign = 'center'
+ctx.fillText(`HIT ANY KEY TO PLAY`, gaWidth/2,gaHeight/2 - 40)
