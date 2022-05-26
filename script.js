@@ -131,6 +131,8 @@ let eBullets = []
 function setupStage(stage=1) {
     // img 14px * 14p   
     // adding invaders 8*4=32 invaders
+    let bulletRate = 1000-30*stage
+    if(bulletRate<300)  bulletRate=300
     for(let i=0; i<8; i++) {
         invaders.push(new Invader(10 + i*(sWidth+15),20,e1,ctx))
         invaders.push(new Invader(10 + i*(sWidth+15),20+sWidth+5,e2,ctx))
@@ -147,7 +149,8 @@ function setupStage(stage=1) {
     stageBD.innerHTML = stage
     drawBackups(shooterCnt-1)
     gameInt = setInterval(gameLoop, 50)
-    bulletInt = setInterval(bulletLoop,1000)
+
+    bulletInt = setInterval(bulletLoop,bulletRate)
 }
 
 function finishStage() {
@@ -191,7 +194,7 @@ function failStage() {
 }
 
 function betweenStage() {
-    
+    ctx.clearRect(0, 0, gaWidth, gaHeight)
     ctx.font = '30px monospace'
     ctx.fillStyle = 'yellow'
     ctx.textAlign = 'center'
